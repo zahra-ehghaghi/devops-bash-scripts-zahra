@@ -1,5 +1,5 @@
 # Simple Retry Script
-This is a simple script for tryint to run a command 
+these are  simple scriptxs for trying to run a command 
 ## How to use
 ```
 
