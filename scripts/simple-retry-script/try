@@ -1,0 +1,118 @@
+#!/usr/bin/bash
+
+if [[ -z  $TRY_INTERVAL ]]; then
+   INTERVAL=10
+  else
+   INTERVAL=$TRY_INTERVAL
+fi  
+if [[ -z  $TRY_NUMBER ]]; then
+   NUM=5
+  else
+   NUM=$TRY_NUMBER
+fi  
+if [[ ! -z  $TRY_COMMAND ]]; then   
+   COMMAND=$TRY_COMMAND
+fi  
+echo $NUM
+echo $INTERVAL
+echo $COMMAND
+SUCESS=1
+
+ 
+
+
+function help {
+		cat <<EOF
+Usage: $0 [options] <COMMAND>
+Available Optios:
+  -h : Display this help and exit
+  -i : Interval
+  -n : Number
+Examples: 
+   $0 -i 5 COMMAND
+   $0 -i 5 -n 5 COMMAND
+   $0 COMMAND
+EOF
+}
+
+function isNumber {
+	if [[ "$1"  =~ ^[0-9]+$ ]]; then
+	   return 0
+   else
+	    return 1
+	fi
+}
+
+if [[  $# == 0 ]]; then
+ help  
+ exit 0
+fi
+
+
+while [[  $# -ne 0 ]]; do
+
+  case $1 in 
+     -h)
+       help
+       exit 0
+      ;;
+    -i)
+       isNumber $2
+       if [[ $? -eq 0  ]]; then
+		INTERVAL=$2
+		shift 2
+	   else
+	     help
+	     exit 1;
+	   fi
+      ;;
+    -n)
+       isNumber $2  
+      if [[ $? -eq 0  ]]; then
+		NUM=$2
+		shift 2
+	   else
+	     help
+	     exit 1;
+	   fi         
+              
+       ;;
+    *)
+	    COMMAND=$@
+		break
+		;;
+		
+	esac
+done
+if [[ -z $COMMAND ]]; then
+	echo "[ERROR]: Command can not be empty. please try again with COMMAND "
+	exit 1
+  else
+	for i in $(seq 1 $NUM); do
+	  $($COMMAND)
+	  if [[ $? -eq 0 ]]; then
+		 SUCESS=0
+		 break
+	   else
+		   echo "[INFO]  The $COMMAND not execute successfully, try number $i "
+		   sleep $INTERVAL       
+	  fi     
+	  
+	done  
+  
+fi
+
+
+if [[  $SUCESS -eq 0  ]]; then
+     echo "[INFO] The $COMMAND execute successfully"
+     else
+     echo "[ERROR]: reached the threshold but $COMMAND did not run seccessfully"
+
+fi
+
+
+      
+    
+
+     
+     
