@@ -1,5 +1,5 @@
 # Simple Retry Script
-these are  simple scriptxs for trying to run a command 
+these are  simple scripts for trying to run a command a $ntime in $i second interval
 ## How to use
 ```
 
